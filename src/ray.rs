@@ -2,7 +2,7 @@ use crate::vec3::Vec3;
 
 #[derive(Copy, Clone, PartialEq, Debug)]
 pub struct Ray {
-    origin: Vec3,
+    pub origin: Vec3,
     direction: Vec3,
 }
 
@@ -16,6 +16,10 @@ impl Ray {
 
     pub fn at(&self, t: f64) -> Vec3 {
         self.origin + self.direction * t
+    }
+
+    pub fn unit_dir(&self) -> Vec3 {
+        self.direction
     }
 }
 

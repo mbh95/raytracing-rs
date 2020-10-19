@@ -2,12 +2,31 @@ mod color;
 mod ray;
 mod vec3;
 
-use crate::color::write_color;
-use crate::vec3::Vec3;
+use crate::color::{write_color, Color};
+use crate::ray::Ray;
+use crate::vec3::{Vec3, ZERO};
+
+fn ray_color(ray: &Ray) -> Color {
+    let t = 0.5 * (ray.unit_dir().y + 1.0);
+    return (1.0 - t) * Color::new(1.0, 1.0, 1.0) + t * Color::new(0.5, 0.7, 1.0);
+}
 
 fn main() -> Result<(), String> {
-    let image_width = 256;
-    let image_height = 256;
+    // Image
+    let aspect_ratio = 16.0 / 9.0;
+    let image_height = 400u32;
+    let image_width = (aspect_ratio * image_height as f64) as u32;
+
+    // Camera
+    let viewport_height = 2.0;
+    let viewport_width = aspect_ratio * viewport_height;
+    let focal_length = 1.0;
+
+    let origin = ZERO;
+    let center_ray_end = Vec3::new(0.0, 0.0, -focal_length);
+    let top_right_from_center = Vec3::new(viewport_width / 2.0, viewport_height / 2.0, 0.0);
+
+    // Render
     println!("P3");
     println!("{} {}", image_width, image_height);
     println!("255");
@@ -19,11 +38,13 @@ fn main() -> Result<(), String> {
             remaining, percent_done
         );
         for x in 0..image_width {
-            let r = x as f64 / (image_width - 1) as f64;
-            let g = y as f64 / (image_height - 1) as f64;
-            let b = 0.25;
+            let u = (2.0 * x as f64 / (image_width - 1) as f64) - 1.0;
+            let v = (2.0 * y as f64 / (image_height - 1) as f64) - 1.0;
+            let uv = Vec3::new(u, v, 0.0);
+            let ray = Ray::new(origin, center_ray_end + uv * top_right_from_center - origin)?;
 
-            write_color(&mut std::io::stdout(), Vec3::new(r, g, b))?;
+            let color = ray_color(&ray);
+            write_color(&mut std::io::stdout(), color)?;
         }
     }
     eprintln!("\rScanlines remaining: 0 ({:.1}%)\nDone!", 100.0);

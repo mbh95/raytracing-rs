@@ -6,7 +6,17 @@ use crate::color::{write_color, Color};
 use crate::ray::Ray;
 use crate::vec3::{Vec3, ZERO};
 
+fn hit_sphere(sphere_center: &Vec3, sphere_radius: f64, ray: &Ray) -> bool {
+    let closest_t = (*sphere_center - ray.origin).dot(ray.unit_dir());
+    let closest_point = ray.at(closest_t);
+    let closest_dist_sq = (*sphere_center - closest_point).len_sq();
+    closest_dist_sq <= (sphere_radius * sphere_radius)
+}
+
 fn ray_color(ray: &Ray) -> Color {
+    if hit_sphere(&Vec3::new(0.0, 0.0, -1.0), 0.5, ray) {
+        return Color::new(1.0, 0.0, 0.0);
+    }
     let t = 0.5 * (ray.unit_dir().y + 1.0);
     return (1.0 - t) * Color::new(1.0, 1.0, 1.0) + t * Color::new(0.5, 0.7, 1.0);
 }

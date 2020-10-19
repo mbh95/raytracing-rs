@@ -18,8 +18,8 @@ impl Ray {
         self.origin + self.direction * t
     }
 
-    pub fn unit_dir(&self) -> Vec3 {
-        self.direction
+    pub fn unit_dir(&self) -> &Vec3 {
+        &self.direction
     }
 }
 

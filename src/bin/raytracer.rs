@@ -1,10 +1,6 @@
-mod color;
-mod ray;
-mod vec3;
-
-use crate::color::{write_color, Color};
-use crate::ray::Ray;
-use crate::vec3::{Vec3, ONE, ZERO};
+use raytrace::color::{write_color, Color};
+use raytrace::ray::Ray;
+use raytrace::vec3::{Vec3, ONE, ZERO};
 
 fn hit_sphere(sphere_center: &Vec3, sphere_radius: f64, ray: &Ray) -> f64 {
     // Solving ||t*ray.direction - (sphere_center - ray.origin)|| = sphere_radius

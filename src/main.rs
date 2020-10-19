@@ -12,15 +12,18 @@ fn hit_sphere(sphere_center: &Vec3, sphere_radius: f64, ray: &Ray) -> f64 {
     let s = *sphere_center - ray.origin;
     // ||t*d - S||^2 = R^2 = (t*d - S) dot (t*d - s) = t^2*(d dot d) + t*2(d dot -S) + (S dot S)
     // Use quadratic equation:
-    let a = d.dot(d);
-    let b = 2.0 * d.dot(&-s);
-    let c = s.dot(&s) - (sphere_radius * sphere_radius);
-
-    let determinant = b * b - 4.0 * a * c;
+    // let a = d.dot(d);
+    // let b = 2.0 * d.dot(&-s);
+    // let c = s.dot(&s) - (sphere_radius * sphere_radius);
+    // let determinant = b * b - 4.0 * a * c;
+    // Notice a = 1 and b is a multiple of 2:
+    let half_b = d.dot(&-s);
+    let c = s.len_sq() - (sphere_radius * sphere_radius);
+    let determinant = half_b * half_b - c;
     if determinant < 0.0 {
         return -1.0;
     }
-    (-b - determinant.sqrt()) / (2.0 * a)
+    -half_b - determinant.sqrt()
 }
 
 fn ray_color(ray: &Ray) -> Result<Color, String> {

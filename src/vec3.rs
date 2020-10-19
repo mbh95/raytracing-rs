@@ -15,6 +15,13 @@ pub static ZERO: Vec3 = Vec3 {
 };
 
 #[allow(dead_code)]
+pub static ONE: Vec3 = Vec3 {
+    x: 1.0,
+    y: 1.0,
+    z: 1.0,
+};
+
+#[allow(dead_code)]
 pub static X: Vec3 = Vec3 {
     x: 1.0,
     y: 0.0,

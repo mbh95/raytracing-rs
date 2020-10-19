@@ -4,21 +4,37 @@ mod vec3;
 
 use crate::color::{write_color, Color};
 use crate::ray::Ray;
-use crate::vec3::{Vec3, ZERO};
+use crate::vec3::{Vec3, ONE, ZERO};
 
-fn hit_sphere(sphere_center: &Vec3, sphere_radius: f64, ray: &Ray) -> bool {
-    let closest_t = (*sphere_center - ray.origin).dot(ray.unit_dir());
-    let closest_point = ray.at(closest_t);
-    let closest_dist_sq = (*sphere_center - closest_point).len_sq();
-    closest_dist_sq <= (sphere_radius * sphere_radius)
+fn hit_sphere(sphere_center: &Vec3, sphere_radius: f64, ray: &Ray) -> f64 {
+    // Solving ||t*ray.direction - (sphere_center - ray.origin)|| = sphere_radius
+    let d = ray.unit_dir();
+    let s = *sphere_center - ray.origin;
+    // ||t*d - S||^2 = R^2 = (t*d - S) dot (t*d - s) = t^2*(d dot d) + t*2(d dot -S) + (S dot S)
+    // Use quadratic equation:
+    let a = d.dot(d);
+    let b = 2.0 * d.dot(&-s);
+    let c = s.dot(&s) - (sphere_radius * sphere_radius);
+
+    let determinant = b * b - 4.0 * a * c;
+    if determinant < 0.0 {
+        return -1.0;
+    }
+    (-b - determinant.sqrt()) / (2.0 * a)
 }
 
-fn ray_color(ray: &Ray) -> Color {
-    if hit_sphere(&Vec3::new(0.0, 0.0, -1.0), 0.5, ray) {
-        return Color::new(1.0, 0.0, 0.0);
+fn ray_color(ray: &Ray) -> Result<Color, String> {
+    let sphere_radius = 0.5;
+    let sphere_center = Vec3::new(0.0, 0.0, -1.0);
+    let hit_t = hit_sphere(&sphere_center, sphere_radius, ray);
+    if hit_t >= 0.0 {
+        let hit_point = ray.at(hit_t);
+        let normal = (hit_point - sphere_center).norm()?;
+        let color = (normal + ONE) / 2.0;
+        return Ok(color);
     }
     let t = 0.5 * (ray.unit_dir().y + 1.0);
-    return (1.0 - t) * Color::new(1.0, 1.0, 1.0) + t * Color::new(0.5, 0.7, 1.0);
+    Ok((1.0 - t) * ONE + t * Color::new(0.5, 0.7, 1.0))
 }
 
 fn main() -> Result<(), String> {
@@ -53,7 +69,7 @@ fn main() -> Result<(), String> {
             let uv = Vec3::new(u, v, 0.0);
             let ray = Ray::new(origin, center_ray_end + uv * top_right_from_center - origin)?;
 
-            let color = ray_color(&ray);
+            let color = ray_color(&ray)?;
             write_color(&mut std::io::stdout(), color)?;
         }
     }

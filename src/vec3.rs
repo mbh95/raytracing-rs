@@ -142,6 +142,18 @@ impl Sub for Vec3 {
     }
 }
 
+impl Mul<Vec3> for Vec3 {
+    type Output = Vec3;
+
+    fn mul(self, rhs: Vec3) -> Vec3 {
+        Vec3 {
+            x: self.x * rhs.x,
+            y: self.y * rhs.y,
+            z: self.z * rhs.z,
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -167,7 +179,7 @@ mod tests {
     }
 
     #[test]
-    fn mul() {
+    fn scale() {
         let v = Vec3::new(1.0, 2.0, 3.0);
         let s = 2.0;
         let r = Vec3::new(2.0, 4.0, 6.0);
@@ -186,6 +198,20 @@ mod tests {
         let a = Vec3::new(1.0, 2.0, 3.0);
         let b = Vec3::new(10.0, 20.0, 30.0);
         assert_eq!(a + b, Vec3::new(11.0, 22.0, 33.0));
+    }
+
+    #[test]
+    fn sub() {
+        let a = Vec3::new(10.0, 20.0, 30.0);
+        let b = Vec3::new(1.0, 2.0, 3.0);
+        assert_eq!(a - b, Vec3::new(9.0, 18.0, 27.0));
+    }
+
+    #[test]
+    fn mul() {
+        let a = Vec3::new(10.0, 20.0, 30.0);
+        let b = Vec3::new(1.0, 2.0, 3.0);
+        assert_eq!(a * b, Vec3::new(10.0, 40.0, 90.0));
     }
 
     #[test]

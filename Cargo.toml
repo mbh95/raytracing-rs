@@ -20,3 +20,4 @@ path = "src/bin/ppmdiff.rs"
 
 [dependencies]
 regex = "1.4.1"
+rand = "0.7.3"

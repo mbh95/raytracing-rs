@@ -1,3 +1,4 @@
+use raytrace::camera::Camera;
 use raytrace::color::{write_color, Color};
 use raytrace::hittable::Hittable;
 use raytrace::hittable_list::HittableList;
@@ -23,13 +24,7 @@ fn main() -> Result<(), String> {
     let image_width = (aspect_ratio * image_height as f64) as u32;
 
     // Camera
-    let viewport_height = 2.0;
-    let viewport_width = aspect_ratio * viewport_height;
-    let focal_length = 1.0;
-
-    let origin = ZERO;
-    let center_ray_end = Vec3::new(0.0, 0.0, -focal_length);
-    let top_right_from_center = Vec3::new(viewport_width / 2.0, viewport_height / 2.0, 0.0);
+    let camera = Camera::new();
 
     // World
     let mut world = HittableList::new();
@@ -52,8 +47,7 @@ fn main() -> Result<(), String> {
         for x in 0..image_width {
             let u = (2.0 * x as f64 / (image_width - 1) as f64) - 1.0;
             let v = (2.0 * y as f64 / (image_height - 1) as f64) - 1.0;
-            let uv = Vec3::new(u, v, 0.0);
-            let ray = Ray::new(origin, center_ray_end + uv * top_right_from_center - origin)?;
+            let ray = camera.get_ray(u, v)?;
 
             let color = ray_color(&ray, &world)?;
             write_color(&mut std::io::stdout(), color)?;

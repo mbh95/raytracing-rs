@@ -2,8 +2,6 @@ use crate::ray::Ray;
 use crate::vec3::{Vec3, ZERO};
 
 pub struct Camera {
-    viewport_width: f64,
-    viewport_height: f64,
     origin: Vec3,
     center_ray_end: Vec3,
     top_right_from_center: Vec3,
@@ -21,8 +19,6 @@ impl Camera {
         let top_right_from_center = Vec3::new(viewport_width / 2.0, viewport_height / 2.0, 0.0);
 
         Camera {
-            viewport_width,
-            viewport_height,
             origin,
             center_ray_end,
             top_right_from_center,

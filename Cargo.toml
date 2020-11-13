@@ -11,8 +11,12 @@ name = "raytrace"
 path = "src/lib/lib.rs"
 
 [[bin]]
-name = "raytracer"
-path = "src/bin/raytracer.rs"
+name = "raytracer_sdl"
+path = "src/bin/raytrace_sdl.rs"
+
+[[bin]]
+name = "raytracer_ppm"
+path = "src/bin/raytrace_ppm.rs"
 
 [[bin]]
 name = "ppmdiff"

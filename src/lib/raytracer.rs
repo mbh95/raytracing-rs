@@ -3,23 +3,17 @@ use crate::color::Color;
 use crate::hittable::Hittable;
 use crate::ray::Ray;
 use crate::vec3::ONE;
-use rand::prelude::ThreadRng;
 use rand::Rng;
 use std::f64::INFINITY;
 
 pub struct Raytracer<'a> {
     camera: &'a Camera,
     world: &'a dyn Hittable,
-    rng: &'a mut ThreadRng,
 }
 
 impl<'a> Raytracer<'a> {
-    pub fn new(
-        camera: &'a Camera,
-        world: &'a dyn Hittable,
-        rng: &'a mut ThreadRng,
-    ) -> Raytracer<'a> {
-        Raytracer { camera, world, rng }
+    pub fn new(camera: &'a Camera, world: &'a dyn Hittable) -> Raytracer<'a> {
+        Raytracer { camera, world }
     }
     pub fn region_color(
         &mut self,
@@ -34,9 +28,10 @@ impl<'a> Raytracer<'a> {
             return self.ray_color(&ray);
         }
         let mut pixel_color = Color::new(0.0, 0.0, 0.0);
+        let mut rng = rand::thread_rng();
         for _sample in 0..samples {
-            let rng_u: f64 = self.rng.gen();
-            let rng_v: f64 = self.rng.gen();
+            let rng_u: f64 = rng.gen();
+            let rng_v: f64 = rng.gen();
             let sample_du = width * rng_u;
             let sample_dv = height * rng_v;
             let (sample_u, sample_v) = (u + sample_du, v + sample_dv);

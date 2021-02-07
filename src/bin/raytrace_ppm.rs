@@ -7,12 +7,10 @@ use raytrace::sphere::Sphere;
 use raytrace::vec3::Vec3;
 
 fn main() -> Result<(), String> {
-    let mut rng = rand::thread_rng();
-
     // Image
-    let image_width = 640u32;
+    let image_width = 480u32;
     let image_height = 480u32;
-    let samples_per_pixel = 10;
+    let samples_per_pixel = 1;
     let aspect_ratio = image_width as f64 / image_height as f64;
     let (pixel_width, pixel_height) = (2.0 / image_width as f64, 2.0 / image_height as f64);
     // Camera`
@@ -25,7 +23,7 @@ fn main() -> Result<(), String> {
     let sphere2 = Sphere::new(Vec3::new(0.0, -100.5, -1.0), 100.0);
     world.add(&sphere2);
 
-    let mut raytracer: Raytracer = Raytracer::new(&camera, &world, &mut rng);
+    let mut raytracer: Raytracer = Raytracer::new(&camera, &world);
 
     // Render
     println!("P3");

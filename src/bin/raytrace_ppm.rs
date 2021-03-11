@@ -39,7 +39,7 @@ fn main() -> Result<(), String> {
         for x in 0..image_width {
             let (u, v) = get_uv(x as f64, y as f64, image_width, image_height);
             let pixel_color =
-                raytracer.region_color(u, v, pixel_width, pixel_height, samples_per_pixel)?;
+                raytracer.region_color(u, v, pixel_width, pixel_height, samples_per_pixel);
             write_color(&mut std::io::stdout(), pixel_color)?;
         }
     }

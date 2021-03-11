@@ -24,11 +24,11 @@ impl Camera {
         }
     }
 
-    pub fn get_ray(&self, u: f64, v: f64) -> Result<Ray, String> {
+    pub fn get_ray(&self, u: f64, v: f64) -> Ray {
         let uv = Vec3::new(u, v, 0.0);
-        return Ok(Ray::new(
+        Ray::new(
             self.origin,
             self.center_ray_end + uv * self.top_right_from_center - self.origin,
-        )?);
+        )
     }
 }

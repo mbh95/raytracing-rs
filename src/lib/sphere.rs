@@ -36,14 +36,14 @@ impl Hittable for Sphere {
         let t1 = -half_b - root_determinant;
         if t1 >= t_min && t1 < t_max {
             let p = ray.at(t1);
-            let normal = (p - self.center).norm().unwrap();
+            let normal = (p - self.center).norm();
             return Some(HitRecord::new(ray, p, normal, t1));
         }
 
         let t2 = -half_b + root_determinant;
         if t2 >= t_min && t2 < t_max {
             let p = ray.at(t2);
-            let normal = (p - self.center).norm().unwrap();
+            let normal = (p - self.center).norm();
             return Some(HitRecord::new(ray, p, normal, t2));
         }
         return None;

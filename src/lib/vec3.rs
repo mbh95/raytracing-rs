@@ -59,14 +59,8 @@ impl Vec3 {
         self.len_sq().sqrt()
     }
 
-    pub fn norm(&self) -> Result<Vec3, String> {
-        let len_sq = self.len_sq();
-        if len_sq == 0.0 {
-            return Err("Tried to normalize a zero-length vector.".to_string());
-        } else if len_sq == 1.0 {
-            return Ok(*self);
-        }
-        Ok(*self / len_sq.sqrt())
+    pub fn norm(&self) -> Vec3 {
+        *self / self.len()
     }
 
     pub fn dot(&self, rhs: &Vec3) -> f64 {
@@ -205,10 +199,9 @@ mod tests {
     }
 
     #[test]
-    fn norm() -> Result<(), String> {
+    fn norm() {
         let a = Vec3::new(1.0, 2.0, 3.0);
-        assert_eq!(a.norm()?.len_sq(), 1.0);
-        Ok(())
+        assert_eq!(a.norm().len_sq(), 1.0);
     }
 
     #[test]

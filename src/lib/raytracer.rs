@@ -15,16 +15,9 @@ impl<'a> Raytracer<'a> {
     pub fn new(camera: &'a Camera, world: &'a dyn Hittable) -> Raytracer<'a> {
         Raytracer { camera, world }
     }
-    pub fn region_color(
-        &mut self,
-        u: f64,
-        v: f64,
-        width: f64,
-        height: f64,
-        samples: u32,
-    ) -> Result<Color, String> {
+    pub fn region_color(&mut self, u: f64, v: f64, width: f64, height: f64, samples: u32) -> Color {
         if samples == 1 {
-            let ray = self.camera.get_ray(u + width / 2.0, v + width / 2.0)?;
+            let ray = self.camera.get_ray(u + width / 2.0, v + width / 2.0);
             return self.ray_color(&ray);
         }
         let mut pixel_color = Color::new(0.0, 0.0, 0.0);
@@ -34,27 +27,25 @@ impl<'a> Raytracer<'a> {
             let rng_v: f64 = rng.gen();
             let sample_du = width * rng_u;
             let sample_dv = height * rng_v;
-            let (sample_u, sample_v) = (u + sample_du, v + sample_dv);
-            let ray = self.camera.get_ray(sample_u, sample_v)?;
-            let ray_color = self.ray_color(&ray)?;
-            pixel_color += ray_color;
+            let sample_color = self.uv_color(u + sample_du, v + sample_dv);
+            pixel_color += sample_color;
         }
-        pixel_color /= samples as f64;
-        Ok(pixel_color)
+        pixel_color / (samples as f64)
     }
 
-    pub fn uv_color(&self, u: f64, v: f64) -> Result<Color, String> {
-        let ray = self.camera.get_ray(u, v)?;
+    pub fn uv_color(&self, u: f64, v: f64) -> Color {
+        let ray = self.camera.get_ray(u, v);
         self.ray_color(&ray)
     }
 
-    pub fn ray_color(&self, ray: &Ray) -> Result<Color, String> {
+    pub fn ray_color(&self, ray: &Ray) -> Color {
         let hit = self.world.hit(&ray, 0.0, INFINITY);
-        if hit.is_some() {
-            let color = (hit.unwrap().normal + ONE) / 2.0;
-            return Ok(color);
+        match hit {
+            Some(hit) => (hit.normal + ONE) / 2.0,
+            None => {
+                let t = 0.5 * (ray.unit_dir().y + 1.0);
+                (1.0 - t) * ONE + t * Color::new(0.5, 0.7, 1.0)
+            }
         }
-        let t = 0.5 * (ray.unit_dir().y + 1.0);
-        Ok((1.0 - t) * ONE + t * Color::new(0.5, 0.7, 1.0))
     }
 }

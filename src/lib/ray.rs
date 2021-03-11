@@ -7,11 +7,11 @@ pub struct Ray {
 }
 
 impl Ray {
-    pub fn new(origin: Vec3, direction: Vec3) -> Result<Ray, String> {
-        Ok(Ray {
+    pub fn new(origin: Vec3, direction: Vec3) -> Ray {
+        Ray {
             origin,
-            direction: direction.norm()?,
-        })
+            direction: direction.norm(),
+        }
     }
 
     pub fn at(&self, t: f64) -> Vec3 {
@@ -29,9 +29,8 @@ mod tests {
     use crate::vec3::X;
 
     #[test]
-    fn at() -> Result<(), String> {
-        let r = Ray::new(Vec3::new(1.0, 2.0, 3.0), X)?;
+    fn at() {
+        let r = Ray::new(Vec3::new(1.0, 2.0, 3.0), X);
         assert_eq!(r.at(6.0), Vec3::new(7.0, 2.0, 3.0));
-        Ok(())
     }
 }

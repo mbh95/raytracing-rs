@@ -1,3 +1,4 @@
+pub mod buffered_image;
 pub mod camera;
 pub mod color;
 pub mod hittable;

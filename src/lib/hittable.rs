@@ -26,7 +26,7 @@ impl HitRecord {
     }
 }
 
-pub trait Hittable {
+pub trait Hittable: Sync {
     /// Returns a hit record describing the hit with the minimum t in the range [min_t, max_t)
     fn hit(&self, ray: &Ray, t_min: f64, t_max: f64) -> Option<HitRecord>;
 }

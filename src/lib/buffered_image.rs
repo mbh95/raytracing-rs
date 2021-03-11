@@ -24,6 +24,22 @@ impl BufferedImage {
     pub fn get_height(&self) -> usize {
         self.height
     }
+
+    fn get_index(&self, x: usize, y: usize) -> usize {
+        if x >= self.width || y >= self.height {
+            panic!("Index out of bounds.")
+        }
+        x * self.width + y
+    }
+
+    pub fn get_pixel(&self, x: usize, y: usize) -> Color {
+        self.pixels[self.get_index(x, y)]
+    }
+
+    pub fn set_pixel(&mut self, x: usize, y: usize, color: Color) {
+        let index = self.get_index(x, y);
+        self.pixels[index] = color;
+    }
 }
 
 impl<I: SliceIndex<[Color]>> Index<I> for BufferedImage {

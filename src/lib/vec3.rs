@@ -1,3 +1,6 @@
+use core::fmt;
+use std::fmt::{Display, Formatter};
+use std::iter::Sum;
 use std::ops::{Add, AddAssign, Div, DivAssign, Mul, MulAssign, Neg, Sub, SubAssign};
 
 #[derive(Copy, Clone, PartialEq, Debug)]
@@ -187,6 +190,17 @@ impl Mul<Vec3> for Vec3 {
     }
 }
 
+impl Sum for Vec3 {
+    fn sum<I: Iterator<Item = Vec3>>(iter: I) -> Self {
+        iter.fold(ZERO, |a, b| a + b)
+    }
+}
+
+impl Display for Vec3 {
+    fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
+        write!(f, "({}, {}, {})", self.x, self.y, self.z)
+    }
+}
 #[cfg(test)]
 mod tests {
     use super::*;

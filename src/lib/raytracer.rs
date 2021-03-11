@@ -15,22 +15,29 @@ impl<'a> Raytracer<'a> {
     pub fn new(camera: &'a Camera, world: &'a dyn Hittable) -> Raytracer<'a> {
         Raytracer { camera, world }
     }
-    pub fn region_color(&mut self, u: f64, v: f64, width: f64, height: f64, samples: u32) -> Color {
+
+    pub fn region_color(&self, u: f64, v: f64, width: f64, height: f64, samples: u32) -> Color {
         if samples == 1 {
-            let ray = self.camera.get_ray(u + width / 2.0, v + width / 2.0);
-            return self.ray_color(&ray);
+            return self.center_region(u, v, width, height);
         }
         let mut pixel_color = Color::new(0.0, 0.0, 0.0);
-        let mut rng = rand::thread_rng();
         for _sample in 0..samples {
-            let rng_u: f64 = rng.gen();
-            let rng_v: f64 = rng.gen();
-            let sample_du = width * rng_u;
-            let sample_dv = height * rng_v;
-            let sample_color = self.uv_color(u + sample_du, v + sample_dv);
-            pixel_color += sample_color;
+            pixel_color += self.sample_region(u, v, width, height);
         }
         pixel_color / (samples as f64)
+    }
+
+    pub fn center_region(&self, u: f64, v: f64, width: f64, height: f64) -> Color {
+        self.uv_color(u + width / 2.0, v + height / 2.0)
+    }
+
+    pub fn sample_region(&self, u: f64, v: f64, width: f64, height: f64) -> Color {
+        let mut rng = rand::thread_rng();
+        let rng_u: f64 = rng.gen();
+        let rng_v: f64 = rng.gen();
+        let sample_du = width * rng_u;
+        let sample_dv = height * rng_v;
+        self.uv_color(u + sample_du, v + sample_dv)
     }
 
     pub fn uv_color(&self, u: f64, v: f64) -> Color {
